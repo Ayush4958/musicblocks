@@ -1087,8 +1087,20 @@ class ModeWidget {
 
         wheelnav.cssMeter = true;
 
+        // Hybrid Bridge: Fetch wheel colors from CSS Tokens for canvas rendering
+        const rootStyles = getComputedStyle(document.body);
+        const modeColors = [
+            rootStyles.getPropertyValue("--mb-wheel-mode-0").trim(),
+            rootStyles.getPropertyValue("--mb-wheel-mode-1").trim()
+        ];
+        const noteColors = [
+            rootStyles.getPropertyValue("--mb-wheel-note-0").trim(),
+            rootStyles.getPropertyValue("--mb-wheel-note-1").trim()
+        ];
+        const orangeColor = rootStyles.getPropertyValue("--mb-color-orange").trim();
+
         // Use the mode wheel color scheme
-        this._modeWheel.colors = platformColor.modeWheelcolors;
+        this._modeWheel.colors = modeColors;
 
         this._modeWheel.slicePathFunction = slicePath().DonutSlice;
         this._modeWheel.slicePathCustom = slicePath().DonutSliceCustomization();
@@ -1111,7 +1123,7 @@ class ModeWidget {
 
         this._modeWheel.createWheel(noteList);
 
-        this._noteWheel.colors = platformColor.noteValueWheelcolors; // modeWheelcolors;
+        this._noteWheel.colors = noteColors; // modeWheelcolors;
         this._noteWheel.slicePathFunction = slicePath().DonutSlice;
         this._noteWheel.slicePathCustom = slicePath().DonutSliceCustomization();
         this._noteWheel.slicePathCustom.minRadiusPercent = 0.75;
@@ -1131,7 +1143,7 @@ class ModeWidget {
 
         this._noteWheel.createWheel(noteList);
 
-        this._playWheel.colors = [platformColor.orange];
+        this._playWheel.colors = [orangeColor];
         this._playWheel.slicePathFunction = slicePath().DonutSlice;
         this._playWheel.slicePathCustom = slicePath().DonutSliceCustomization();
         this._playWheel.slicePathCustom.minRadiusPercent = 0.3;

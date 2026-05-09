@@ -15,7 +15,7 @@
 /*
    global
 
-   platformColor, _, docById, getNote, setCustomChord, keySignatureToMode,
+   _, docById, getNote, setCustomChord, keySignatureToMode,
    getModeNumbers, getTemperament, normalizeNoteAccidentals
 */
 /*
@@ -24,8 +24,8 @@
        getNote, setCustomChord
    js/utils/utils.js
         _, docById
-    js/utils/platformstyle.js
-        platformColor
+   css/tokens.css, css/widget-tokens.css
+       Design tokens (--mb-*) and semantic classes (mb-*)
 */
 /* exported Arpeggio */
 
@@ -145,13 +145,12 @@ class Arpeggio {
 
             // A cell for the row label
             labelCell = arpeggioTableRow.insertCell();
-            labelCell.style.backgroundColor = platformColor.labelColor;
+            labelCell.className = "headcol mb-label-bg";
             labelCell.style.fontSize = this._cellScale * 50 + "%";
             labelCell.style.height = Arpeggio.CELLSIZE + "px";
             labelCell.style.width = Arpeggio.CELLSIZE + "px";
             labelCell.style.minWidth = 0;
             labelCell.style.maxWidth = 0;
-            labelCell.className = "headcol";
             labelCell.innerHTML = this._rowLabels[j];
 
             arpeggioCell = arpeggioTableRow.insertCell();
@@ -171,13 +170,12 @@ class Arpeggio {
         // An extra row for the time values
         arpeggioTableRow = arpeggioTable.insertRow();
         labelCell = arpeggioTableRow.insertCell();
-        labelCell.style.backgroundColor = platformColor.labelColor;
+        labelCell.className = "headcol mb-label-bg";
         labelCell.style.fontSize = this._cellScale * 50 + "%";
         labelCell.style.height = Arpeggio.CELLSIZE + "px";
         labelCell.style.width = Arpeggio.CELLSIZE + "px";
         labelCell.style.minWidth = Arpeggio.CELLSIZE + "px";
         labelCell.style.maxWidth = labelCell.style.minWidth;
-        labelCell.className = "headcol";
         labelCell.innerHTML = "";
 
         const outerDiv = docById("arpeggioOuterDiv");
@@ -299,13 +297,13 @@ class Arpeggio {
     /**
      * @private
      * @param {number} row index
-     * @returns {string} color, e.g. "#ffffff"
+     * @returns {string} CSS class name for the cell background
      */
-    _getBackgroundColor(i) {
+    _getBackgroundClass(i) {
         if (this._rowInMode(i)) {
-            return platformColor.selectorSelected;
+            return "mb-selector-bg-selected";
         }
-        return platformColor.selectorBackground;
+        return "mb-selector-bg";
     }
 
     /**
@@ -328,20 +326,20 @@ class Arpeggio {
             cell.style.width = cell.width;
             cell.style.minWidth = cell.style.width;
             cell.style.maxWidth = cell.style.width;
-            cell.style.backgroundColor = this._getBackgroundColor(i);
-            cell.style.border = "2px solid white";
-            cell.style.borderRadius = "10px";
+            cell.className = this._getBackgroundClass(i) + " mb-arpeggio-cell";
 
             cell.setAttribute("id", i + "," + arpeggioIdx); // row,column
 
             cell.onmouseover = () => {
-                if (cell.style.backgroundColor !== "black") {
-                    cell.style.backgroundColor = platformColor.selectorSelected;
+                if (!cell.classList.contains("mb-selector-bg-active")) {
+                    cell.classList.remove("mb-selector-bg");
+                    cell.classList.add("mb-selector-bg-selected");
                 }
             };
             cell.onmouseout = () => {
-                if (cell.style.backgroundColor !== "black") {
-                    cell.style.backgroundColor = platformColor.selectorBackground;
+                if (!cell.classList.contains("mb-selector-bg-active")) {
+                    cell.classList.remove("mb-selector-bg-selected");
+                    cell.classList.add("mb-selector-bg");
                 }
             };
         }
@@ -358,9 +356,8 @@ class Arpeggio {
         cell.style.fontSize = Math.floor(this._cellScale * 50) + "%";
         cell.style.lineHeight = 100 + "%";
         cell.setAttribute("id", arpeggioIdx);
-        cell.className = "headcol";
+        cell.className = "headcol mb-selector-bg";
         cell.innerHTML = arpeggioName;
-        cell.style.backgroundColor = platformColor.selectorBackground;
     }
 
     /**
@@ -390,15 +387,15 @@ class Arpeggio {
                 cell.onclick = e => {
                     const currCell = e.target;
                     const rowcol = currCell.id.split(",");
-                    if (currCell.style.backgroundColor === "black") {
-                        currCell.style.backgroundColor = this._getBackgroundColor(
-                            Number(rowcol[0])
-                        );
+                    if (currCell.classList.contains("mb-selector-bg-active")) {
+                        currCell.classList.remove("mb-selector-bg-active");
+                        currCell.classList.add(this._getBackgroundClass(Number(rowcol[0])));
                         this._setCell(rowcol[1], rowcol[0], false);
                     } else {
                         // Only one cell per column can be set.
                         this._clearColumn(rowcol[1], rowcol[0]);
-                        currCell.style.backgroundColor = "black";
+                        currCell.classList.remove("mb-selector-bg", "mb-selector-bg-selected");
+                        currCell.classList.add("mb-selector-bg-active");
                         this._setCell(rowcol[1], rowcol[0], true);
                     }
                 };
@@ -438,7 +435,8 @@ class Arpeggio {
                 cell = cellRow.cells[col];
 
                 if (cell !== undefined) {
-                    cell.style.backgroundColor = "black";
+                    cell.classList.remove("mb-selector-bg", "mb-selector-bg-selected");
+                    cell.classList.add("mb-selector-bg-active");
                     this.__playCell(row, col, cell, false);
                 }
             }
@@ -550,7 +548,7 @@ class Arpeggio {
                 table = docById("arpeggioCellTable" + i);
                 row = table.rows[0];
                 cell = row.cells[j];
-                if (cell.style.backgroundColor === "black") {
+                if (cell.classList.contains("mb-selector-bg-active")) {
                     thisPair = [i, j];
                     //pairs.push([i, j]);
                     break;
@@ -626,7 +624,7 @@ class Arpeggio {
         let cell;
         for (let i = 0; i < row.cells.length; i++) {
             cell = row.cells[i];
-            if (cell.style.backgroundColor === "black") {
+            if (cell.classList.contains("mb-selector-bg-active")) {
                 this.__playCell(rowi, i, cell, playNote);
             }
         }
@@ -691,8 +689,9 @@ class Arpeggio {
             table = docById("arpeggioCellTable" + i);
             row = table.rows[0];
             cell = row.cells[colIndex];
-            if (cell.style.backgroundColor === "black") {
-                cell.style.backgroundColor = this._getBackgroundColor(i);
+            if (cell.classList.contains("mb-selector-bg-active")) {
+                cell.classList.remove("mb-selector-bg-active");
+                cell.classList.add(this._getBackgroundClass(i));
                 this._setCell(colIndex, i, false);
             }
         }
@@ -713,8 +712,9 @@ class Arpeggio {
             row = table.rows[0];
             for (let j = 0; j < row.cells.length; j++) {
                 cell = row.cells[j];
-                if (cell.style.backgroundColor === "black") {
-                    cell.style.backgroundColor = this._getBackgroundColor(i);
+                if (cell.classList.contains("mb-selector-bg-active")) {
+                    cell.classList.remove("mb-selector-bg-active");
+                    cell.classList.add(this._getBackgroundClass(i));
                     this._setCell(j, i, false);
                 }
             }

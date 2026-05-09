@@ -240,13 +240,11 @@ describe("Arpeggio Widget", () => {
             const cell = document.getElementById("2,1"); // Row 2, Col 1
             expect(cell).not.toBeNull();
 
-            // Initial background color should be the selector background or selected based on mode
-            const initialColor = cell.style.backgroundColor;
-
             // Click cell
             cell.onclick({ target: cell });
 
-            expect(cell.style.backgroundColor).toBe("black");
+            // Cell should now have the active class (replaces backgroundColor === "black")
+            expect(cell.classList.contains("mb-selector-bg-active")).toBe(true);
 
             // Should add a node
             expect(arpeggio._blockMap).toContainEqual([
@@ -263,11 +261,11 @@ describe("Arpeggio Widget", () => {
 
             // Click once
             cell.onclick({ target: cell });
-            expect(cell.style.backgroundColor).toBe("black");
+            expect(cell.classList.contains("mb-selector-bg-active")).toBe(true);
 
             // Click twice
             cell.onclick({ target: cell });
-            expect(cell.style.backgroundColor).not.toBe("black");
+            expect(cell.classList.contains("mb-selector-bg-active")).toBe(false);
 
             // Node should be removed (marked as [-1, -1])
             expect(arpeggio._blockMap).toContainEqual([-1, -1]);
@@ -279,12 +277,12 @@ describe("Arpeggio Widget", () => {
 
             // Click cell1
             cell1.onclick({ target: cell1 });
-            expect(cell1.style.backgroundColor).toBe("black");
+            expect(cell1.classList.contains("mb-selector-bg-active")).toBe(true);
 
             // Click cell2
             cell2.onclick({ target: cell2 });
-            expect(cell2.style.backgroundColor).toBe("black");
-            expect(cell1.style.backgroundColor).not.toBe("black");
+            expect(cell2.classList.contains("mb-selector-bg-active")).toBe(true);
+            expect(cell1.classList.contains("mb-selector-bg-active")).toBe(false);
         });
     });
 
@@ -314,13 +312,13 @@ describe("Arpeggio Widget", () => {
         test("clear button unclicks all cells", () => {
             const cell = document.getElementById("2,1");
             cell.onclick({ target: cell });
-            expect(cell.style.backgroundColor).toBe("black");
+            expect(cell.classList.contains("mb-selector-bg-active")).toBe(true);
 
             // Find clear button from mocked calls and call it
             // It's the erase-button
             arpeggio._clear();
 
-            expect(cell.style.backgroundColor).not.toBe("black");
+            expect(cell.classList.contains("mb-selector-bg-active")).toBe(false);
             // Node removed
             expect(arpeggio._blockMap).toContainEqual([-1, -1]);
         });

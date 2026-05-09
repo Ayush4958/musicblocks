@@ -1,0 +1,80 @@
+/**
+ * MusicBlocks v3.6.2
+ *
+ * @author Ayush Bhandari
+ *
+ * @copyright 2025 Ayush Bhandari
+ *
+ * @license
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
+ * Widget Token Classes
+ * ====================
+ *
+ * Semantic CSS classes that map widget UI elements to design tokens.
+ * These classes replace inline  element.style.backgroundColor = platformColor.X
+ * assignments in widget JavaScript files.
+ *
+ * USAGE (in JS):
+ *   BEFORE:  cell.style.backgroundColor = platformColor.labelColor;
+ *   AFTER:   cell.classList.add("mb-label-bg");
+ *
+ * All colors resolve through  var(--mb-*)  tokens defined in tokens.css,
+ * so theme changes propagate automatically without any JS mutation.
+ */
+
+/* ---- Label cells (row headers in widget grids) ---- */
+.mb-label-bg {
+    background-color: var(--mb-label-color);
+}
+
+/* ---- Selector cells (clickable grid cells) ---- */
+.mb-selector-bg {
+    background-color: var(--mb-selector-bg);
+}
+
+.mb-selector-bg-selected {
+    background-color: var(--mb-selector-selected);
+}
+
+.mb-selector-bg-active {
+    background-color: black;
+}
+
+/* ---- Selector cell hover states ---- */
+.mb-selector-bg:not(.mb-selector-bg-active):hover {
+    background-color: var(--mb-selector-selected);
+}
+
+/* ---- Arpeggio-specific grid cell styling ---- */
+.mb-arpeggio-cell {
+    border: var(--mb-border-cell);
+    border-radius: 10px;
+}
+
+/* ---- Widget surface backgrounds ---- */
+.mb-widget-surface {
+    background-color: var(--mb-widget-bg);
+}
+
+.mb-widget-button-bg {
+    background-color: var(--mb-widget-button);
+}
+
+/* ---- Overlay backgrounds ---- */
+.mb-overlay-bg {
+    background-color: var(--mb-surface-overlay);
+}

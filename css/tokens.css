@@ -1,0 +1,305 @@
+/**
+ * MusicBlocks v3.6.2
+ *
+ * @author Ayush Yadav
+ *
+ * @copyright 2025 Ayush Yadav
+ *
+ * @license
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/*
+ * Design Token System for MusicBlocks
+ * ====================================
+ *
+ * This file is the SINGLE SOURCE OF TRUTH for all visual styling in
+ * MusicBlocks.  Tokens are CSS custom properties grouped by purpose.
+ *
+ * NAMING CONVENTION
+ *   --mb-<category>-<element>-<variant>
+ *
+ *   Categories:
+ *     color   – foreground / text colors
+ *     surface – background colors for surfaces and panels
+ *     border  – border / separator colors
+ *     focus   – focus-ring and outline colors
+ *     widget  – colors specific to widget chrome
+ *     selector – colors for selector / grid cells
+ *
+ *   Examples:
+ *     --mb-color-text          primary body text
+ *     --mb-surface-app         main app / canvas background
+ *     --mb-widget-button       widget toolbar button background
+ *     --mb-selector-bg         grid cell default background
+ *     --mb-focus-ring          keyboard-focus outline color
+ *
+ * HOW THEMES WORK
+ *   :root             → light theme (default)
+ *   body.dark         → dark theme overrides
+ *   body.highcontrast → high-contrast theme overrides
+ *
+ *   Components reference tokens via  var(--mb-token-name).
+ *   Switching themes is a single  document.body.classList.toggle("dark")
+ *   call — no DOM walking, no JS color mutation.
+ *
+ * ADDING A NEW THEME
+ *   1. Add a new  body.<themeName> { ... }  block below.
+ *   2. Override only the tokens whose values differ from :root.
+ *   3. That's it. All components pick up the new values automatically.
+ */
+
+/* =========================================================
+   LIGHT THEME  (default)
+   ========================================================= */
+:root {
+    /* ---- Text / Foreground ---- */
+    --mb-color-text: #000000;
+    --mb-color-text-secondary: #666666;
+    --mb-color-text-block: #282828;
+    --mb-color-text-heading: #0066ff;
+
+    /* ---- Surfaces / Backgrounds ---- */
+    --mb-surface-app: #f9f9f9;
+    --mb-surface-panel: #ffffff;
+    --mb-surface-dialogue: #ffffff;
+    --mb-surface-overlay: rgba(255, 255, 255, 0.85);
+
+    /* ---- Borders / Rules ---- */
+    --mb-border-primary: #e2e2e2;
+    --mb-border-cell: 2px solid white;
+
+    /* ---- Accent / Interactive ---- */
+    --mb-color-accent: #2196f3;
+    --mb-color-accent-hover: #1e88e5;
+
+    /* ---- Buttons ---- */
+    --mb-color-button-blue: #0066ff;
+    --mb-color-button-blue-hover: #023a76;
+    --mb-color-button-blue-text: white;
+    --mb-color-button-cancel: #f1f1f1;
+    --mb-color-button-cancel-hover: #afafaf;
+
+    /* ---- Header / Toolbar ---- */
+    --mb-surface-header: #4da6ff;
+    --mb-surface-header-aux: #1a8cff;
+    --mb-surface-header-sub: #8cc6ff;
+
+    /* ---- Widget Chrome ---- */
+    --mb-widget-bg: #ccc;
+    --mb-widget-button: #8cc6ff;
+    --mb-widget-button-hover: #7bb5ee;
+    --mb-widget-button-select: #c8c8c8;
+
+    /* ---- Palette ---- */
+    --mb-palette-selected: #f3f3f3;
+    --mb-palette-bg: #ffffff;
+    --mb-palette-label-bg: #8cc6ff;
+    --mb-palette-label-selected: #1a8cff;
+    --mb-palette-text: #666666;
+    --mb-palette-hover: #e0e0e0;
+
+    /* ---- Selector / Grid Cells ---- */
+    --mb-selector-bg: #8cc6ff;
+    --mb-selector-selected: #1a8cff;
+    --mb-selector-active: black;
+
+    /* ---- Labels ---- */
+    --mb-label-color: #a0a0a0;
+
+    /* ---- Trash ---- */
+    --mb-trash-color: #c0c0c0;
+    --mb-trash-border: #808080;
+    --mb-trash-active: #ff0000;
+
+    /* ---- Music-specific surfaces ---- */
+    --mb-surface-drum: #3edcdd;
+    --mb-surface-drum-label: #25c3c0;
+    --mb-surface-pitch: #7cd622;
+    --mb-surface-pitch-label: #77c428;
+    --mb-surface-graphics: #92a9ff;
+    --mb-surface-graphics-label: #728ff9;
+    --mb-surface-lyrics-label: #ff2b77;
+    --mb-surface-lyrics-input: #ff6ea1;
+    --mb-surface-tuplet: #c0c0c0;
+    --mb-surface-rhythm-cell: #c8c8c8;
+
+    /* ---- Ruler ---- */
+    --mb-ruler-highlight: #ffbf00;
+
+    /* ---- Misc ---- */
+    --mb-color-stop-icon: #ea174c;
+    --mb-color-disconnected: #c4c4c4;
+    --mb-color-orange: #e37a00;
+
+    /* ---- Focus / Accessibility ---- */
+    --mb-focus-ring: #0066ff;
+    --mb-focus-ring-offset: 2px;
+    --mb-focus-ring-width: 2px;
+
+    /* ---- Wheel Colors (Arrays converted to variables) ---- */
+    --mb-wheel-mode-0: #77c428;
+    --mb-wheel-mode-1: #93e042;
+    --mb-wheel-note-0: #ffb2bc;
+    --mb-wheel-note-1: #ffccd6;
+}
+
+/* =========================================================
+   DARK THEME
+   ========================================================= */
+body.dark {
+    --mb-color-text: #e2e2e2;
+    --mb-color-text-secondary: #bdbdbd;
+    --mb-color-text-block: #ffffff;
+    --mb-color-text-heading: #0066ff;
+
+    --mb-surface-app: #303030;
+    --mb-surface-panel: #1c1c1c;
+    --mb-surface-dialogue: #1c1c1c;
+    --mb-surface-overlay: rgba(28, 28, 28, 0.9);
+
+    --mb-border-primary: #424242;
+
+    --mb-color-accent: #3fe0d1;
+    --mb-color-accent-hover: #35c4b7;
+
+    --mb-color-button-blue: #0066ff;
+    --mb-color-button-blue-hover: #023a76;
+
+    --mb-surface-header: #1e88e5;
+    --mb-surface-header-aux: #1976d2;
+    --mb-surface-header-sub: #64b5f6;
+
+    --mb-widget-bg: #454545;
+    --mb-widget-button: #225a91;
+    --mb-widget-button-hover: #1d4d7e;
+    --mb-widget-button-select: #979797;
+
+    --mb-palette-selected: #1e1e1e;
+    --mb-palette-bg: #1c1c1c;
+    --mb-palette-label-bg: #022363;
+    --mb-palette-label-selected: #01143b;
+    --mb-palette-text: #bdbdbd;
+    --mb-palette-hover: #808080;
+
+    --mb-selector-bg: #64b5f6;
+    --mb-selector-selected: #1e88e5;
+
+    --mb-label-color: #bdbdbd;
+
+    --mb-trash-color: #757575;
+    --mb-trash-border: #424242;
+    --mb-trash-active: #e53935;
+
+    --mb-surface-drum: #00acc1;
+    --mb-surface-drum-label: #008ba3;
+    --mb-surface-pitch: #4caf50;
+    --mb-surface-pitch-label: #388e3c;
+    --mb-surface-graphics: #7986cb;
+    --mb-surface-graphics-label: #5c6bc0;
+    --mb-surface-lyrics-label: #c7225d;
+    --mb-surface-lyrics-input: #d15a84;
+    --mb-surface-tuplet: #424242;
+    --mb-surface-rhythm-cell: #303030;
+
+    --mb-ruler-highlight: #ffeb3b;
+
+    --mb-color-stop-icon: #d50000;
+    --mb-color-disconnected: #5c5c5c;
+    --mb-color-orange: #fb8c00;
+
+    --mb-focus-ring: #64b5f6;
+
+    --mb-wheel-mode-0: #388e3c;
+    --mb-wheel-mode-1: #4caf50;
+    --mb-wheel-note-0: #ffcdd2;
+    --mb-wheel-note-1: #ef9a9a;
+}
+
+/* =========================================================
+   HIGH-CONTRAST THEME
+   ========================================================= */
+body.highcontrast {
+    --mb-color-text: #ffffff;
+    --mb-color-text-secondary: #ffffff;
+    --mb-color-text-block: #000000;
+    --mb-color-text-heading: #ffff00;
+
+    --mb-surface-app: #000000;
+    --mb-surface-panel: #000000;
+    --mb-surface-dialogue: #000000;
+    --mb-surface-overlay: rgba(0, 0, 0, 0.95);
+
+    --mb-border-primary: #ffffff;
+    --mb-border-cell: 2px solid #ffffff;
+
+    --mb-color-accent: #00ffff;
+    --mb-color-accent-hover: #00cccc;
+
+    --mb-color-button-blue: #00ffff;
+    --mb-color-button-blue-hover: #00cccc;
+    --mb-color-button-blue-text: black;
+    --mb-color-button-cancel: #ffffff;
+    --mb-color-button-cancel-hover: #cccccc;
+
+    --mb-surface-header: #00ffff;
+    --mb-surface-header-aux: #00cccc;
+    --mb-surface-header-sub: #00ffff;
+
+    --mb-widget-bg: #000000;
+    --mb-widget-button: #00ffff;
+    --mb-widget-button-hover: #00cccc;
+    --mb-widget-button-select: #ffffff;
+
+    --mb-palette-selected: #111111;
+    --mb-palette-bg: #000000;
+    --mb-palette-label-bg: #000080;
+    --mb-palette-label-selected: #0000ff;
+    --mb-palette-text: #ffffff;
+    --mb-palette-hover: #666666;
+
+    --mb-selector-bg: #00ffff;
+    --mb-selector-selected: #00cccc;
+
+    --mb-label-color: #ffffff;
+
+    --mb-trash-color: #ffffff;
+    --mb-trash-border: #ffffff;
+    --mb-trash-active: #ff0000;
+
+    --mb-surface-drum: #00ffff;
+    --mb-surface-drum-label: #00cccc;
+    --mb-surface-pitch: #00ff00;
+    --mb-surface-pitch-label: #00cc00;
+    --mb-surface-graphics: #ff00ff;
+    --mb-surface-graphics-label: #cc00cc;
+    --mb-surface-lyrics-label: #ff00ff;
+    --mb-surface-lyrics-input: #ff66ff;
+    --mb-surface-tuplet: #333333;
+    --mb-surface-rhythm-cell: #333333;
+
+    --mb-ruler-highlight: #ffff00;
+
+    --mb-color-stop-icon: #ff0000;
+    --mb-color-disconnected: #666666;
+    --mb-color-orange: #ff8800;
+
+    --mb-focus-ring: #ffff00;
+    --mb-focus-ring-width: 3px;
+
+    --mb-wheel-mode-0: #00cc00;
+    --mb-wheel-mode-1: #00ff00;
+    --mb-wheel-note-0: #ff6666;
+    --mb-wheel-note-1: #ffcccc;
+}
