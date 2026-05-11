@@ -78,3 +78,17 @@
 .mb-overlay-bg {
     background-color: var(--mb-surface-overlay);
 }
+
+/* ---- Global Accessibility Focus Ring ---- */
+:focus-visible {
+    outline: var(--mb-focus-ring-width, 2px) solid var(--mb-focus-ring) !important;
+    outline-offset: var(--mb-focus-ring-offset, 2px) !important;
+}
+
+button:focus-visible, 
+[role="button"]:focus-visible, 
+input:focus-visible, 
+.mb-arpeggio-cell:focus-visible {
+    outline: var(--mb-focus-ring-width, 2px) solid var(--mb-focus-ring) !important;
+    outline-offset: var(--mb-focus-ring-offset, 2px) !important;
+}
