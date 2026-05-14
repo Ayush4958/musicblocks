@@ -4015,16 +4015,22 @@ const numberToPitch = (i, temperament, startPitch, offset, activity) => {
 
     let n = 0;
     let pitchNumber;
+    
+    // POC C4GT Refactor: Decouple hardcoded '12' to support non-EDO temperaments dynamically
+    const octaveLen = (TEMPERAMENT[temperament] && TEMPERAMENT[temperament]["pitchNumber"]) 
+        ? TEMPERAMENT[temperament]["pitchNumber"] 
+        : 12;
+
     if (i < 0) {
         while (i < 0) {
-            i += 12;
+            i += octaveLen; // Changed from 12
             n += 1; // Count octave bump ups.
         }
 
         if (temperament === "equal") {
             return [
-                PITCHES[(i + PITCHES.indexOf("A")) % 12],
-                Math.floor((i + PITCHES.indexOf("A")) / 12) - n
+                PITCHES[(i + PITCHES.indexOf("A")) % octaveLen], // Changed from 12
+                Math.floor((i + PITCHES.indexOf("A")) / octaveLen) - n // Changed from 12
             ];
         } else {
             pitchNumber = Math.floor(i - offset);
@@ -4032,8 +4038,8 @@ const numberToPitch = (i, temperament, startPitch, offset, activity) => {
     } else {
         if (temperament === "equal") {
             return [
-                PITCHES[(i + PITCHES.indexOf("A")) % 12],
-                Math.floor((i + PITCHES.indexOf("A")) / 12)
+                PITCHES[(i + PITCHES.indexOf("A")) % octaveLen], // Changed from 12
+                Math.floor((i + PITCHES.indexOf("A")) / octaveLen) // Changed from 12
             ];
         } else {
             pitchNumber = Math.floor(i - offset);
@@ -4060,13 +4066,18 @@ const numberToPitch = (i, temperament, startPitch, offset, activity) => {
 
         pitchNumber = pitchIdx + "";
         if (TEMPERAMENT[temperament][pitchNumber] === undefined) {
-            // If custom temperament is not defined, then it will
-            // store equal temperament notes.
-            for (let j = 0; j < 12; j++) {
+            // POC C4GT Refactor: Generalized EDO mathematical generation
+            // Instead of hardcoding 12-EDO (Math.pow(2, j/12)), we use the dynamic octaveLength.
+            // This prevents custom temperaments from breaking when falling back.
+            for (let j = 0; j < octaveLen; j++) { // Changed from 12
                 const number = "" + j;
-                interval = TEMPERAMENT["equal"]["interval"][j];
+                // If the interval is not explicitly defined in the temperament, calculate it
+                interval = (TEMPERAMENT[temperament]["interval"] && TEMPERAMENT[temperament]["interval"][j]) 
+                            ? TEMPERAMENT[temperament]["interval"][j] 
+                            : TEMPERAMENT["equal"]["interval"][j % 12]; // Safe fallback
+                
                 TEMPERAMENT[temperament][number] = [
-                    Math.pow(2, j / 12),
+                    Math.pow(2, j / octaveLen), // Mathematical generalization of EDO ratios (Changed from 12)
                     getNoteFromInterval(startPitch, interval)[0],
                     getNoteFromInterval(startPitch, interval)[1]
                 ];
@@ -5900,10 +5911,25 @@ const noteToPitchOctave = note => {
  * @param {string} keySignature - The key signature.
  * @returns {number} The calculated frequency.
  */
-const pitchToFrequency = (pitch, octave, cents, keySignature) => {
+const pitchToFrequency = (pitch, octave, cents, keySignature, temperament) => {
     // Calculate the frequency based on pitch and octave.
     const pitchNumber = pitchToNumber(pitch, octave, keySignature);
 
+    // POC C4GT Refactor: Dynamic frequency calculation for non-12-EDO
+    // Generalizes TWELTHROOT2 (2^(1/12)) to N-EDO dynamic roots (2^(1/N))
+    if (temperament && TEMPERAMENT[temperament]) {
+        const octaveLen = TEMPERAMENT[temperament]["pitchNumber"] || 12;
+        const dynamicRoot = Math.pow(2, 1 / octaveLen);
+        
+        if (cents === 0) {
+            return A0 * Math.pow(dynamicRoot, pitchNumber);
+        } else {
+            const centsRoot = Math.pow(2, 1 / (octaveLen * 100));
+            return A0 * Math.pow(centsRoot, (pitchNumber * 100) + cents);
+        }
+    }
+
+    // Legacy 12-EDO fallback (backward compatibility)
     if (cents === 0) {
         return A0 * Math.pow(TWELTHROOT2, pitchNumber);
     } else {
